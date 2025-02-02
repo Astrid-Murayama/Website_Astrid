@@ -1,0 +1,350 @@
+@use "./variable" as v;
+@use "sass:math";
+
+/* ----------------------------------------------------------------------
+SASS関数をまとめるためのファイルです。
+※CSSの慣例を踏襲し、変数や関数の命名にはハイフンケースを使用。
+---------------------------------------------------------------------- */
+
+/* ----------------------------------------------------------------------
+計算処理用に、単位を除去する関数。
+---------------------------------------------------------------------- */
+
+@function strip-unit($number) {
+    @return math.div($number, ($number * 0 + 1));
+}
+
+/* ----------------------------------------------------------------------
+%値を数値に変換する関数。
+---------------------------------------------------------------------- */
+
+@function percent-to-number($percent-value) {
+    @return strip-unit($percent-value) / 100;
+}
+
+/* ----------------------------------------------------------------------
+最小サイズ（px）とそれに対応する画面幅、最大サイズ（px）とそれに対応する画面幅をそれぞれ指定して、それらの間を滑らかに変化するclamp処理を出力する関数。
+clampの第二引数に固定値を用いるため、ブラウザの縮尺変更にも対応可能。
+なお、1remあたりのpx値はプロジェクトに応じてカスタマイズが可能。
+第五引数には出力希望の単位を入力できるが、省略するとremが適用される使用。
+
+使用例） 
+font-size: f.adaptive-clamp(320, 16, 1200, 32);
+font-size: f.adaptive-clamp($min-px: 30, $max-px: 60); // 第一、第三、第五引数を省略。
+width: f.adaptive-clamp(320, 50, 1200, 100, px);
+---------------------------------------------------------------------- */
+
+@function adaptive-clamp($min-viewport: v.$base-sp-width, $min-px, $max-viewport: v.$default-wrapper-max-vp, $max-px, $output-unit: "rem") {
+
+    // 引数にpx単位が記述されていた場合は、それを取り除く。
+    $min-viewport: strip-unit($min-viewport);
+    $max-viewport: strip-unit($max-viewport);
+    $min-px: strip-unit($min-px);
+    $max-px: strip-unit($max-px);
+
+    // 1remあたりのpx値を定義。
+    $px-equivalent-of-rem: 10; // ブラウザ標準は1rem = 16pxだが、本プロジェクトではhtml要素に対してfont-size: 62.5%を指定しているため、1rem = 10pxと定義。
+    $px-to-rem-ratio: math.div(1, $px-equivalent-of-rem);
+
+    // 最小サイズと最大サイズの差分を計算。
+    $px-change-amount: $max-px - $min-px;
+    // 最小画面幅と最大画面幅の差分を計算。
+    $vp-change-amount: $max-viewport - $min-viewport;
+    // 画面幅とサイズの変化の割合を計算。
+    $change-ratio: math.div($px-change-amount, $vp-change-amount);
+    // 変化の割合をvw単位に変換し、少数第三位を四捨五入。
+    $change-ratio-in-vw: math.div(math.round($change-ratio * 10000), 100);
+
+    @if $output-unit =="rem" {
+        // 最小サイズをrem単位で算出し、小数第四位を四捨五入。
+        $min-size-in-rem: math.div(math.round($min-px * $px-to-rem-ratio * 1000), 1000);
+        // 最大サイズをrem単位で算出し、小数第四位を四捨五入。
+        $max-size-in-rem: math.div(math.round($max-px * $px-to-rem-ratio * 1000), 1000);
+        // 固定サイズ部分をrem単位で算出し、小数第四位を四捨五入。
+        $fixed-size-in-rem: math.div(math.round(($min-px - $change-ratio * $min-viewport) * $px-to-rem-ratio * 1000), 1000);
+
+        @return clamp(#{$min-size-in-rem}rem, #{$fixed-size-in-rem}rem + #{$change-ratio-in-vw}vw, #{$max-size-in-rem}rem);
+    }
+
+    @else if $output-unit =="px" {
+        // 固定サイズ部分をpx単位で算出し、小数第四位を四捨五入。
+        $fixed-size-in-px: math.div(math.round(($min-px - $change-ratio * $min-viewport) * 1000), 1000);
+
+        @return clamp(#{$min-px}px, #{$fixed-size-in-px}px + #{$change-ratio-in-vw}vw, #{$max-px}px);
+    }
+
+    @else {
+        @error "Unsupported unit. Please use 'rem' or 'px'.";
+    }
+}
+
+/* ----------------------------------------------------------------------
+サイト全体のテンプレートとなるfont-size値を、baseやheadingなどのタイプ別に生成するための処理。
+---------------------------------------------------------------------- */
+
+// 基本的な文章（base）に関するフォントサイズとその増減割合、カスタムプロパティにも使用されるインデックス名等の設定。
+$base-fz-configs: (
+    // インデックスのプリフィックス部分。
+    'key-name': 'base-fz',
+    // インデックス0の場合の最小サイズ。
+    'base-min-size': 15.5,
+    // インデックス0の場合の最大サイズ。
+    'base-max-size': 16.5,
+    // 最小サイズの増加割合。
+    'min-scale': 1.0325,
+    // 最大サイズの増加割合。
+    'max-scale': 1.045,
+    // 最小のインデックス番号。
+    'min-index': -4,
+    // 最大のインデックス番号。
+    'max-index': 7,
+    // 最小サイズに達する画面幅。
+    'min-viewport': v.$base-sp-width,
+    // 最大サイズに達する画面幅。
+    'max-viewport': v.$default-wrapper-max-vp
+);
+
+// 見出し（heading）等に関するフォントサイズとその増減割合、カスタムプロパティにも使用されるインデックス名等の設定。
+$heading-fz-configs: (
+    'key-name': 'heading-fz',
+    'base-min-size': 18.5,
+    'base-max-size': 30,
+    'min-scale': 1.0325,
+    'max-scale': map-get(v.$typographic-scale, 'minor-second'),
+    'min-index': -4,
+    'max-index': 7,
+    'min-viewport': v.$base-sp-width,
+    'max-viewport': v.$tab-max
+);
+
+// *-fz-configs配列を元に、フォントサイズカタログを連想配列で生成する関数。
+@function generate-font-rule($fz-configs) {
+
+    $result: (
+    );
+
+$min-index: map-get($fz-configs, 'min-index');
+$max-index: map-get($fz-configs, 'max-index');
+
+// 負のインデックス。
+@for $i from $min-index * -1 through 1 {
+    $calculated-min-size: map-get($fz-configs, 'base-min-size');
+    $calculated-max-size: map-get($fz-configs, 'base-max-size');
+
+    @for $j from 1 through $i {
+        $calculated-min-size: math.div($calculated-min-size, map-get($fz-configs, 'min-scale'));
+        $calculated-max-size: math.div($calculated-max-size, map-get($fz-configs, 'max-scale'));
+    }
+
+    $index-name: #{map-get($fz-configs, 'key-name')}--#{$i};
+
+    $result: map-merge($result, ($index-name: (
+                map-get($fz-configs, 'min-viewport'), $calculated-min-size, map-get($fz-configs, 'max-viewport'), $calculated-max-size))
+    );
+}
+
+// 正のインデックス。
+@for $i from 0 through $max-index {
+    $calculated-min-size: map-get($fz-configs, 'base-min-size');
+    $calculated-max-size: map-get($fz-configs, 'base-max-size');
+
+    @if $i> 0 {
+        @for $j from 1 through $i {
+            $calculated-min-size: math.div(math.round($calculated-min-size * map-get($fz-configs, 'min-scale') * 1000), 1000);
+            $calculated-max-size: math.div(math.round($calculated-max-size * map-get($fz-configs, 'max-scale') * 1000), 1000);
+        }
+    }
+
+    $index-name: #{map-get($fz-configs, 'key-name')}-#{$i};
+
+    $result: map-merge($result, ($index-name: (
+                map-get($fz-configs, 'min-viewport'), $calculated-min-size, map-get($fz-configs, 'max-viewport'), $calculated-max-size))
+    );
+}
+
+@return $result;
+}
+
+// *-fz-configs配列を元に、実際のフォントサイズカタログを生成。
+$base-font-sizes: generate-font-rule($base-fz-configs);
+$heading-font-sizes: generate-font-rule($heading-fz-configs);
+
+// 以下は生成されるフォントサイズカタログのイメージ。
+// $base-font-sizes: (
+//     base-fz--3:(v.$base-sp-width, 14.08, v.$default-wrapper-max-vp, 14.46),
+//     base-fz--2:(v.$base-sp-width, 14.54, v.$default-wrapper-max-vp, 15.11),
+//     base-fz--1:(v.$base-sp-width, 15.01, v.$default-wrapper-max-vp, 15.79),
+//     base-fz-0:(v.$base-sp-width, 15.5, v.$default-wrapper-max-vp, 16.5),
+//     base-fz-1:(v.$base-sp-width, 16, v.$default-wrapper-max-vp, 17.24),
+//     base-fz-2:(v.$base-sp-width, 16.52, v.$default-wrapper-max-vp, 18.02),
+//     base-fz-3:(v.$base-sp-width, 17.06, v.$default-wrapper-max-vp, 18.83),
+//     base-fz-4:(v.$base-sp-width, 17.62, v.$default-wrapper-max-vp, 19.68),
+//     base-fz-5:(v.$base-sp-width, 18.19, v.$default-wrapper-max-vp, 20.56),
+// );
+
+// カスタムプロパティを出力するためにmixinを作成（ここでしか使わないので、本ファイルに含めています）。
+@mixin generate-fz-custom-property($font-sizes) {
+    @each $key, $val in $font-sizes {
+        --#{$key}: #{adaptive-clamp($val...)};
+    }
+}
+
+// 生成されたフォントサイズカタログを参照し、カスタムプロパティを追加。
+:root {
+    @include generate-fz-custom-property($base-font-sizes);
+    @include generate-fz-custom-property($heading-font-sizes);
+}
+
+// font-size: f.fz(base, -2);等の指定を可能にするための関数。第二引数を省略すれば、インデックスは自動で0に設定。※DevTools上での作業を考慮すると、fz関数よりも、生成されたカスタムプロパティでfont-sizeを指定する方が効率的です（カタログからインデックスを選んで、ブラウザ上で差し替えられるため）。
+@function fz($type, $index: 0) {
+    $generated-font-sizes: (
+        'base': $base-font-sizes,
+        'heading': $heading-font-sizes
+    );
+
+$fz-config-arrays: (
+    'base': $base-fz-configs,
+    'heading': $heading-fz-configs
+);
+
+$selected-font-sizes: map-get($generated-font-sizes, $type);
+$selected-fz-configs: map-get($fz-config-arrays, $type);
+$selected-key: map-get($selected-fz-configs, 'key-name') + '-' + $index;
+
+@if map-has-key($selected-font-sizes, $selected-key) {
+    $val: adaptive-clamp(map-get($selected-font-sizes, $selected-key)...);
+    @return $val;
+}
+
+@else {
+    @warn "key-name: #{$selected-key} not found in the $selected-fz-configs.";
+}
+}
+
+/* ----------------------------------------------------------------------
+カラー調整。
+---------------------------------------------------------------------- */
+
+// HSLAのL値を第二引数分だけ増減する関数。
+@function adjust-lightness($color, $amount) {
+    $lightness: lightness($color) + $amount;
+    $lightness: max(0, min($lightness, 100)); // L値の上限と下限を、それぞれ100と0に設定。
+
+    @return hsla(hue($color), saturation($color), $lightness, alpha($color));
+}
+
+// lighten関数。第二引数の値だけL値を加算します。
+@function lighten($color, $amount) {
+    @return adjust-lightness($color, $amount);
+}
+
+// darken関数。第二引数の値だけL値を減算します。
+@function darken($color, $amount) {
+    @return adjust-lightness($color, -$amount);
+}
+
+// transparentize関数。第一引数のカラーのアルファ値を、第二引数の値に設定します。
+@function transparentize($color, $amount) {
+    $alpha: max(0, min($amount, 1)); // アルファ値の上限と下限を、それぞれ1と0に設定。
+
+    @return rgba(red($color), green($color), blue($color), $alpha);
+}
+
+/* ----------------------------------------------------------------------
+linear-gradient値を返す、l-gradient関数（標準関数との衝突を避けるため、この命名にしました）。
+第一引数にグラデーションの方向、第二引数にカラーセットを記述して使用します。
+（重要）第二引数にカラーの開始・終了ポイントを追加する場合は、それぞれのカラーと値を()で囲み、半角スペースで区切ります。
+
+（使用例）
+background: f.l-gradient(right, #43c6ac #191654); // mapキーワードを第一引数に使用。
+background: f.l-gradient(to right, #43c6ac #191654 #963d91); // 方向を示すCSS標準のキーワードも使用可能。
+background: f.l-gradient(45, (#1a2a6c 25%) (#b21f1f 25% 50%) (#fdbb2d 50% 75%) (orange 75% 100%)); // 単位なし数値はdegと認識し、複数カラーと色範囲を指定可能。
+background: f.l-gradient(-135deg, (#1a2a6c 0 10%) (#b21f1f 30% 60%) (#fdbb2d 90% 100%)); // 単位付き第一引数はそのまま認識。turnなども利用可能。
+
+（参考）
+https://docs.gerillass.com/docs/linear-gradient/
+https://github.com/selfishprimate/gerillass/blob/master/scss/maps/_map-for-positions.scss
+---------------------------------------------------------------------- */
+
+@function l-gradient($direction, $colors) {
+    $list: (
+    );
+
+$map-for-directions: (
+    "top": to top,
+    "top-right": to top right,
+    "right": to right,
+    "bottom-right": to bottom right,
+    "bottom": to bottom,
+    "bottom-left": to bottom left,
+    "left": to left,
+    "top-left": to top left,
+);
+
+@for $i from 1 through length($colors) {
+    $list: append($list, nth($colors, $i), comma);
+}
+
+// mapキーワードが存在する場合の処理。
+@if map-has-key($map-for-directions, $direction) {
+    @return linear-gradient(map-get($map-for-directions, $direction), $list);
+}
+
+// 第一引数に単位なしの数値が含まれる場合は、"deg"と判断。（例） 90 → 90deg
+@if type-of($direction)==number and unit($direction)=="" {
+    $direction: $direction + deg;
+}
+
+@return linear-gradient($direction, $list);
+}
+
+/* ----------------------------------------------------------------------
+radial-gradient値を返す、r-gradient関数（標準関数との衝突を避けるため、この命名にしました）。
+第一引数にグラデーションの形、第二引数にグラデーションの中心点、第三引数にカラーセットを記述して使用します。
+（重要）第三引数にカラーの開始・終了ポイントを追加する場合は、それぞれのカラーと値を()で囲み、半角スペースで区切ります。
+
+（使用例）
+background: r-gradient(circle, top-right, red orange);
+background: r-gradient(null, closest-side, red orange); // ＄shapeはnullを使用してスキップすることが可能。その場合はCSSの仕様によりellipseが適用される。
+background: r-gradient(circle, farthest-corner, red orange gold);
+background: r-gradient(circle, center, (darkslateblue 0 10%) (white 10% 20%) (dodgerblue 20% 30%) (powderblue 30% 100%)); // 複数カラーと色範囲を指定することも可能。
+background: r-gradient($colors: pink crimson); // デフォルト引数が存在するものをスキップして、$colorsのみを指定することも可能。
+
+（参考）
+https://docs.gerillass.com/docs/radial-gradient/
+https://github.com/selfishprimate/gerillass/blob/master/scss/library/_radial-gradient.scss
+---------------------------------------------------------------------- */
+
+@function r-gradient($shape: null, $position: center, $colors) {
+    $list: (
+    );
+
+$map-for-positions: (
+    "top": at top,
+    "top-right": at top right,
+    "right": at right,
+    "bottom-right": at bottom right,
+    "bottom": at bottom,
+    "bottom-left": at bottom left,
+    "left": at left,
+    "top-left": at top left,
+    "center": at center,
+);
+
+// $shapeにnullが指定されていない場合の処理。
+@if $shape {
+    $shape: unquote($shape);
+}
+
+$position: unquote($position);
+
+@for $i from 1 through length($colors) {
+    $list: append($list, nth($colors, $i), comma);
+}
+
+@if map-has-key($map-for-positions, $position) {
+    @return radial-gradient($shape map-get($map-for-positions, $position), $list);
+}
+
+@return radial-gradient($shape $position, $list);
+}

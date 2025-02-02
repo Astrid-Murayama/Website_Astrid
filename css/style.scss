@@ -1,0 +1,1595 @@
+/* 注意：本コードはSCSSで記述されています。CSSファイルを編集すると、SCSSファイルの更新時に上書きされるのでご注意ください。設計手法はBEM（MindBEMding）です。*/
+
+@charset "utf-8";
+@use "sass:math";
+
+/* ----------------------------------------------------------------------
+コンパイル対象ファイル。※読み込ませる順番に注意。
+---------------------------------------------------------------------- */
+@use "partial/global/destyle";
+@use "partial/global/variable" as v;
+@use "partial/global/function" as f;
+@use "partial/global/mixin" as m;
+// @use "partial/global/base";
+@use "partial/component/heder";
+@use "partial/page/top";
+@use "partial/page/about-web";
+@use "partial/page/portfolio";
+
+/* ----------------------------------------------------------------------
+TODO以下は開発のためこのファイルに記述。のちに移動
+---------------------------------------------------------------------- */
+
+// TODO　_base.scssへ移動
+// 1rem = 10pxとなるように、ブラウザのfont-size基準値（16px）を10/16倍。
+html {
+  font-size: 62.5%;
+}
+body {
+  font-family: "Yu Mincho Light", "YuMincho", "Yu Mincho", "游明朝体",
+    "ヒラギノ明朝 ProN", "Hiragino Mincho ProN", "ヒラギノ明朝 ProN",
+    "Hiragino Mincho ProN", sans-serif;
+}
+
+// TODO　これ大丈夫か？？
+// main {
+//   position: relative;
+// }
+
+/* ----------------------------------------------------------------------
+TODO共通デザインに関する指定
+---------------------------------------------------------------------- */
+
+.helper {
+  &__box-shadow {
+    box-shadow: 0px 3.5px 3.5px rgba(0, 0, 0, 0.275);
+  }
+
+  // 余白に関して
+  &__wrapper-basic {
+    padding-inline: 10%;
+    // 適切なmax-widthとは、、
+    // max-width: 1200px;
+    @include m.media(sp) {
+      padding-inline: 5%;
+    }
+  }
+
+  &__pl-10 {
+    padding-left: 10%;
+    @include m.media(sp) {
+      padding-left: 5%;
+    }
+  }
+
+  &__wrapper-breaker {
+    padding-inline: calc(50vw - 50%);
+    margin-inline: calc(50% - 50vw);
+  }
+
+  &__add-check-mark-with-circle {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+
+    &::before {
+      content: "";
+      width: 1.6em; /* 円の大きさ */
+      height: 1.6em;
+      aspect-ratio: 1;
+      border: 2px solid #95ccff; /* 線で円を作成 */
+      border-radius: 50%; /* 円形にする */
+      background-image: url("/img/common/icon_check-mark.png"); /* check-mark アイコンのパス */
+      background-size: 1em; /* アイコンのサイズ */
+      background-position: center; /* アイコンを中央に配置 */
+      background-repeat: no-repeat; /* アイコンの繰り返しを防ぐ */
+    }
+  }
+
+  // imgを黄金比でトリミング
+  &-ratio-golden {
+    aspect-ratio: 1.618 / 1;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+// 全てのセクション共通の余白
+// TODOheroは除く指定に
+section {
+  padding-block: 5.8rem;
+  // width: min(85%, 1200px);
+  // margin-inline: auto;
+}
+
+// TODO
+// /utils
+//   _spacing.scss     // 余白関連
+.wrapper__basic {
+  width: min(85%, 1200px);
+  margin-inline: auto;
+  //
+}
+
+/* ----------------------------------------------------------------------
+共通フォントに関する指定
+---------------------------------------------------------------------- */
+
+// TODOグローバルの指定
+
+.text__basic {
+  font-size: var(--base-fz--1);
+  line-height: 1.5;
+}
+.text__basic--indent {
+  text-indent: 1.6rem;
+}
+.text__basic--center {
+  text-align: center;
+}
+
+// TODO　_common.scssへ移動
+.section__title {
+  font-size: clamp(2rem, 1.545rem + 1.42vw, 3rem);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.section__title-en {
+  color: v.$dark-blue;
+  font-size: clamp(4rem, 2.407rem + 4.98vw, 7.5rem);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  &--white {
+    color: #fff;
+  }
+}
+.section__summary {
+  // font-size: 1.6rem;
+  font-size: var(--base-fz--1);
+  line-height: 1.5;
+  margin-bottom: 4rem;
+  text-align: center;
+
+  &--white {
+    color: #fff;
+  }
+}
+/* ----------------------------------------------------------------------
+  共通パーツ＿ボタン
+  ---------------------------------------------------------------------- */
+
+// TODO　_common.scssへ移動
+
+.btn__gradient-blue {
+  display: inline-block;
+  width: 180px;
+  background: radial-gradient(#2a83ac, #005378);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 1.6rem;
+  box-shadow: 3.5px 3.5px 3.5px hsla(0, 0%, 0%, 0.275);
+  border-radius: 5px;
+  padding-block: 1rem;
+
+  transition: all 0.4s;
+
+  &--center {
+    margin-inline: auto;
+  }
+  &:hover {
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+  }
+}
+.btn__gradient-blue--with-arrow {
+  position: relative;
+  &::after {
+    content: "";
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-image: url(/img/common/icon_arrow.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+
+    position: absolute;
+    top: 5px;
+    right: -30px;
+  }
+  @include m.media(tab) {
+    margin-inline: auto;
+  }
+}
+
+.btn__view-portfolio {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center; // ボタン内の内容を中央揃え
+  background-color: black;
+  color: #fff;
+  font-size: clamp(1.4rem, 2.8vw, 1.8rem);
+  padding-block: 1.2em;
+  padding-inline: 1.8em;
+  box-shadow: 3.5px 3.5px 3.5px hsla(0, 0%, 0%, 0.275);
+  overflow: hidden; // ボタンの範囲外を隠す
+  width: max-content; // コンテンツ幅に基づいてサイズ調整
+  white-space: nowrap; // テキストが折り返されないように設定
+  border: 1px solid black;
+
+  // fvに配置するボタンへの指定
+  &--top {
+    position: absolute;
+    transform: translate(0, -50%);
+    right: 0;
+    z-index: 100;
+  }
+
+  // 画面下に固定して配置するボタンへの指定
+  &--fixed {
+    // position: fixed;
+    position: absolute;
+    right: 2em;
+    bottom: 1em;
+    z-index: 100;
+    @include m.media(tab) {
+      position: static;
+    }
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: white; // ホバー時の背景色
+    z-index: -1; // テキストの背後に配置
+    transition: all 0.4s ease; // 背景アニメーション
+    @include m.media(tab) {
+      display: none;
+      transition: none;
+    }
+  }
+
+  &:hover {
+    color: black;
+    @include m.media(tab) {
+      color: inherit; // ホバーカラーを無効化
+    }
+  }
+
+  &:hover::before {
+    left: 0; // ホバー時に背景がスライドイン
+  }
+
+  // 矢印「＞」を追加
+  &::after {
+    content: "＞";
+    font-size: 1em;
+    margin-left: 1rem; // テキストと矢印の間隔調整
+    color: inherit; // テキストと同じ色
+    position: relative; // 擬似要素の独立性を確保
+    left: 0; // 初期位置を設定
+    transition: transform 0.4s ease; // 移動をtransformで管理
+  }
+
+  &:hover::after {
+    transform: translateX(5px); // 矢印を右に動かす
+  }
+
+  &-container {
+    display: flex;
+    flex-direction: column; // pタグを縦並びに
+    gap: 0.4em;
+  }
+}
+
+.fixed-footer {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  right: 0;
+  bottom: 1em;
+  z-index: 100;
+}
+.fixed-footer__contact-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center; // ボタン内の内容を中央揃え
+  width: 100%;
+  background: radial-gradient(#2a83ac, #005378);
+  color: #fff;
+  font-size: clamp(1.4rem, 2.8vw, 1.6rem);
+  padding-block: 0.8em;
+  padding-inline: 0.8em;
+  box-shadow: 3.5px 3.5px 3.5px hsla(0, 0%, 0%, 0.275);
+  overflow: hidden; // ボタンの範囲外を隠す
+  white-space: nowrap; // テキストが折り返されないように設定
+
+  &--pc-none {
+    display: none;
+    @include m.media(tab) {
+      display: inline-flex;
+    }
+  }
+}
+
+// 固定フッターボタンに関する指定（sp）
+// .fixed-footer {
+
+// }
+
+/* ----------------------------------------------------------------------
+TODO以下は開発のためこのファイルに記述。のちに移動
+---------------------------------------------------------------------- */
+
+/* ----------------------------------------------------------------------
+contactに対するスタイル指定ファイルです。
+---------------------------------------------------------------------- */
+
+.contact {
+  // TODO共通の指定を強制解除
+  padding-block: 0;
+
+  &__container {
+    display: grid;
+    grid-template-columns: 33vw 67vw;
+    @include m.media(tab) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  // 画像使用の左側
+  &__service-select {
+    background-image: url(/img/contact/background_view-of-Italy-Manarola.webp);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: sticky;
+    top: 0;
+
+    @include m.media(tab) {
+      position: relative;
+      height: auto;
+      padding-block: 2.6rem;
+    }
+
+    fieldset {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    legend {
+      font-size: 2.6rem;
+      line-height: 1.5;
+      text-align: center;
+      color: white;
+      margin-bottom: 2rem;
+    }
+
+    &-img-box {
+      padding-inline: 6.5em;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    img {
+      width: 100%;
+      @include m.media(tab) {
+        width: 55%;
+      }
+      @include m.media(sp) {
+        width: 90%;
+      }
+    }
+
+    &-box {
+      display: flex;
+      flex-direction: column;
+      padding: 0.5em 4em;
+      background-color: white;
+      border-radius: 5px;
+      font-size: 1.5rem;
+      box-shadow: 0px 3.5px 3.5px rgba(0, 0, 0, 0.275);
+    }
+
+    input {
+      display: none;
+    }
+    label {
+      padding-block: 0.75em;
+      display: flex;
+      align-items: center;
+      column-gap: 0.5em;
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+
+      &::before {
+        content: "";
+        border: 1px solid black;
+        border-radius: 50%;
+        width: 20px;
+        aspect-ratio: 1;
+        background-color: #fff;
+      }
+
+      &:has(:checked)::after {
+        content: "";
+        width: 15px;
+        aspect-ratio: 1;
+        background-color: black;
+        border-radius: 50%;
+
+        position: absolute;
+        top: 50%;
+        left: 0.65em;
+        transform: translate(
+          -50%,
+          -50%
+        ); // translateをプロパティとして使用するとSafariでレイアウトが狂う問題を確認
+      }
+    }
+  }
+
+  // 水色背景の右側
+  &-form__main {
+    background-color: #caf6fc;
+    display: flex;
+    flex-direction: column;
+    padding-inline: 12vw;
+    padding-block: 4.8rem;
+
+    h1 {
+      font-size: 2.6rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    &-note-box {
+      background-color: white;
+      font-size: 1.4rem;
+      line-height: 1.8;
+      padding: 1em 2.5em;
+      margin-bottom: 6rem;
+    }
+  }
+
+  &-form {
+    &__items {
+      font-size: 1.5rem;
+
+      input {
+        background-color: white;
+        border: 1px solid rgb(165, 165, 165);
+        border-radius: 3px;
+        padding-block: 0.75em;
+        padding-inline: 1em;
+        flex: 1;
+      }
+      textarea {
+        resize: vertical;
+        width: 100%;
+        height: 15em;
+        background-color: white;
+        border: 1px solid rgb(165, 165, 165);
+
+        padding-block: 0.75em;
+        padding-inline: 1em 0.75em;
+        font-size: clamp(1.6rem, 1.493rem + 0.33vw, 1.75rem);
+        line-height: 1.5;
+      }
+    }
+
+    &__item {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+      border-bottom: 1.5px solid white;
+      margin-bottom: 2em;
+    }
+
+    &__requirement {
+      color: #fff;
+      font-size: clamp(1.4rem, 1.257rem + 0.45vw, 1.6rem);
+      font-weight: 500;
+      white-space: nowrap;
+      border-radius: 0.25em;
+      display: inline-block;
+      padding-block: 0.3em;
+      padding-inline: 1.25em;
+      margin-right: 0.2em;
+      background-color: v.$dark-blue;
+      &--required {
+        background-color: #bb2541;
+      }
+    }
+
+    &__error-container {
+      color: #bb2541;
+      padding-bottom: 0.2em;
+    }
+  }
+
+  button {
+    width: 100%;
+    background-color: #3493be;
+    color: white;
+    font-size: 1.6rem;
+    padding-block: 0.5em;
+    border-radius: 100vh;
+    box-shadow: 0px 3.5px 3.5px rgba(0, 0, 0, 0.275);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+
+    &::after {
+      content: ">";
+      color: white;
+      font-size: 1em;
+    }
+  }
+}
+
+/* ----------------------------------------------------------------------
+確認画面に対するスタイル指定ファイルです。
+---------------------------------------------------------------------- */
+.confirmation {
+  background-color: #caf6fc;
+  padding-inline: 10%;
+  padding-block: 3, 8rem;
+
+  &-container {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 3.5px 3.5px 3.5px rgba(0, 0, 0, 0.275);
+    padding: 4rem;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 2.6rem;
+    margin-bottom: 0.5em;
+  }
+  p {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2em;
+    span {
+      background-color: #3493be;
+      color: #fff;
+      padding: 0.2em 1.2em;
+      font-size: 1.8rem;
+      border-radius: 100vh;
+    }
+  }
+  table {
+    width: 100%;
+  }
+  tr {
+    font-size: 1.6rem;
+    line-height: 4;
+    border-bottom: 1px solid black;
+  }
+  th {
+    font-weight: 900;
+  }
+
+  &-btn-box {
+    display: flex;
+    // flex-direction: column;
+    gap: 1rem;
+    margin-top: 3rem;
+
+    button:first-child {
+      border: 0.5px solid rgb(89, 89, 89);
+
+      width: 100%;
+      font-size: 1.8rem;
+      padding-block: 0.5em;
+      border-radius: 100vh;
+      box-shadow: 0px 3.5px 3.5px rgba(0, 0, 0, 0.275);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5em;
+
+      &::before {
+        content: "<";
+        color: currentColor;
+        font-size: 1em;
+      }
+    }
+    button:last-child {
+      background-color: #3493be;
+      color: white;
+
+      width: 100%;
+      font-size: 1.8rem;
+      padding-block: 0.5em;
+      border-radius: 100vh;
+      box-shadow: 0px 3.5px 3.5px rgba(0, 0, 0, 0.275);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5em;
+
+      &::after {
+        content: ">";
+        color: currentColor;
+        font-size: 1em;
+      }
+    }
+  }
+}
+
+/* ----------------------------------------------------------------------
+サンクスページに対するスタイル指定ファイルです。
+---------------------------------------------------------------------- */
+.thanks {
+  background-color: #caf6fc;
+  padding-inline: 10%;
+  padding-block: 3, 8rem;
+
+  &-img-container {
+    width: 12vw;
+    img {
+      width: 100%;
+    }
+  }
+
+  &-container {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 3.5px 3.5px 3.5px rgba(0, 0, 0, 0.275);
+    padding: 4rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    h1 {
+      font-size: 2.6rem;
+      font-weight: 900;
+      margin-bottom: 0.5em;
+      color: v.$dark-blue;
+    }
+    .thanks-txt-return {
+      font-size: 2rem;
+      margin-bottom: 1em;
+    }
+    .thanks-txt-mail {
+      font-size: 1.6rem;
+      margin-bottom: 2em;
+      a {
+        color: v.$dark-blue;
+        border-bottom: 1px solid currentColor;
+      }
+    }
+  }
+}
+
+/* ----------------------------------------------------------------------
+ポートフォリオページ（pf-project）に対するスタイル指定ファイルです。
+---------------------------------------------------------------------- */
+.pf-project-hero {
+  background-size: cover;
+  background-position: center;
+  padding-block: clamp(6rem, 9vw, 12rem);
+
+  &__container {
+    border-top: 1.5px solid rgba(255, 255, 255, 0.65);
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.65);
+    padding-block: clamp(0.6rem, 1vw, 1rem);
+  }
+  &__inner {
+    background-color: rgba(255, 255, 255, 0.65);
+    padding-block: clamp(3rem, 6vw, 4rem);
+    padding-left: 10%;
+    @include m.media(sp) {
+      padding-left: 5%;
+    }
+
+    p {
+      font-size: 1.6rem;
+    }
+    h1 {
+      font-size: clamp(2.6rem, 4vw, 3.2rem);
+    }
+  }
+  // 各ページ毎に独自の背景画像を指定
+  &--cleaning-site {
+    background-image: url(/img/service/portfolio/web/alphaberry-group.com:cleaning/background_cleaning-site-fv.jpg);
+  }
+  &--cooking-site {
+    background-image: url(/img/service/portfolio/web/alphaberry-group.com:cooking/background_cooking-site-fv.jpg);
+  }
+  &--home-care-site {
+    background-image: url(/img/service/portfolio/web/alphaberry-group.com:home-care/background_home-care-site-fv.jpg);
+  }
+  &--home-nursing-site {
+    background-image: url(/img/service/portfolio/web/alphaberry-group.com:home-nursing/background_home-nursing-site-fv.jpg);
+  }
+  &--house-support-site {
+    background-image: url(/img/service/portfolio/web/alphaberry-group.com:house-support/background_house-support-site-fv.jpg);
+  }
+  &--housemaid-site {
+    background-image: url(/img/service/portfolio/web/alphaberry-group.com:housemaid/background_housemaid-site-fv.jpg);
+  }
+  &--senior-support-site {
+    background-image: url(/img/service/portfolio/web/alphaberry-group.com:senior-support/background_senior-support-site-fv.jpg);
+  }
+  &--home-care-lp {
+    background-image: url(/img/service/portfolio/web/alphaolive.jp/background_home-care-lp-fv.jpg);
+  }
+  &--home-nursing-lp {
+    background-image: url(/img/service/portfolio/web/alphapeach.co.jp/background_home-nursing-lp-fv.jpg);
+  }
+  &--housemaid-lp {
+    background-image: url(/img/service/portfolio/web/kaseifu-alphaberry.com/background_housemaid-lp-fv.jpg);
+  }
+  &--senior-lp {
+    background-image: url(/img/service/portfolio/web/senior-alphaberry.com/background_senior-lp-fv.jpg);
+  }
+
+  &--cafe-bivouac {
+    background-image: url(/img/service/portfolio/flyer/bc.jpg);
+  }
+  &--sample-bouldering {
+    background-image: url(/img/service/portfolio/flyer/bc_bouldering.jpg);
+  }
+  &--clarusone-senior {
+    background-image: url(/img/service/portfolio/flyer/bc_senior.jpg);
+  }
+  &--clarusone-cooking {
+    background-image: url(/img/service/portfolio/flyer/bc_cooking.jpg);
+  }
+  &--clarusone-group {
+    background-image: url(/img/service/portfolio/flyer/bc_group.jpg);
+  }
+  &--clarusone-company {
+    background-image: url(/img/service/portfolio/flyer/bc_company.jpg);
+  }
+  &--clarusone-docter {
+    background-image: url(/img/service/portfolio/flyer/bc_docter.jpg);
+  }
+  &--clarusone-general {
+    background-image: url(/img/service/portfolio/flyer/bc_general.jpg);
+  }
+  &--olive {
+    background-image: url(/img/service/portfolio/flyer/bc_olive.jpg);
+  }
+  &--clarusone-senior-02 {
+    background-image: url(/img/service/portfolio/flyer/bc_senior-02.jpg);
+  }
+  &--clarusone-senior-service {
+    background-image: url(/img/service/portfolio/flyer/bc_senior-service.jpg);
+  }
+  &--clarusone-credit {
+    background-image: url(/img/service/portfolio/flyer/bc_credit.jpg);
+  }
+  &--clarusone-center {
+    background-image: url(/img/service/portfolio/flyer/bc_center.jpg);
+  }
+  &--sample-mountain {
+    background-image: url(/img/service/portfolio/flyer/bc_mountain.jpg);
+  }
+  &--sample-seminer {
+    background-image: url(/img/service/portfolio/flyer/bc_seminar.jpg);
+  }
+  &--sample-sweet {
+    background-image: url(/img/service/portfolio/flyer/bc_sweet.jpg);
+  }
+  &--clarusone-housemaid {
+    background-image: url(/img/service/portfolio/flyer/bc_housemaid.jpg);
+  }
+}
+
+.sp-none {
+  @include m.media(tab) {
+    display: none;
+  }
+}
+
+.pc-none {
+  display: none;
+  @include m.media(tab) {
+    display: block;
+  }
+}
+
+.pf-img__pc-none {
+  width: 80vw;
+  margin-inline: auto;
+  text-align: center;
+  margin-top: 4rem;
+
+  @include m.media(sp) {
+    width: 100%;
+    padding-inline: 5%;
+  }
+
+  img {
+    width: 100%;
+  }
+}
+
+.pf-project-body {
+  display: grid;
+  grid-template-columns: 1fr 28vw;
+  gap: 4rem;
+
+  @include m.media(tab) {
+    grid-template-columns: 1fr;
+    padding-block: 2rem;
+    gap: 2rem;
+  }
+
+  img {
+    width: 100%;
+    margin-bottom: clamp(2rem, 6vw, 4rem);
+  }
+
+  &__btn-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  &__btn {
+    font-size: var(--base-fz--1);
+    border: 1px solid black;
+    width: clamp(20rem, 34vw, 30rem);
+    padding-block: 0.5em;
+    border-radius: 100vh;
+    text-align: center;
+    &--1 {
+      margin-bottom: 0.5rem;
+    }
+    &--2 {
+      background-color: black;
+      color: white;
+    }
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+
+  &__img-container {
+    @include m.media(tab) {
+      order: 2;
+    }
+  }
+
+  &__txt-container {
+    position: sticky; /* stickyを使用 */
+    top: 30%; /* スクロール後に位置を中央に固定 */
+    align-self: start;
+    transition: transform 0.3s ease; /* transformの適用にスムーズな遷移を追加 */
+
+    @include m.media(tab) {
+      order: 1;
+      position: unset;
+    }
+  }
+  table {
+    width: 100%;
+    margin: 0 auto;
+    border-collapse: separate;
+    border-spacing: 0px 15px;
+    font-size: 12px;
+  }
+
+  th,
+  td {
+    padding: 10px;
+  }
+
+  th {
+    background: v.$dark-blue;
+    vertical-align: middle;
+    text-align: left;
+    width: 100px;
+    overflow: visible;
+    position: relative;
+    color: #fff;
+    font-weight: normal;
+    font-size: var(--base-fz--1);
+    white-space: nowrap;
+  }
+
+  th:after {
+    left: 100%;
+    top: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: rgba(136, 183, 213, 0);
+    border-left-color: v.$dark-blue;
+    border-width: 10px;
+    margin-top: -10px;
+  }
+  /* firefox */
+  @-moz-document url-prefix() {
+    th::after {
+      float: right;
+      padding: 0;
+      left: 30px;
+      top: 10px;
+      content: " ";
+      height: 0;
+      width: 0;
+      position: relative;
+      pointer-events: none;
+      border: 10px solid transparent;
+      border-left: #295890 10px solid;
+      margin-top: -10px;
+    }
+  }
+
+  td {
+    background: #f8f8f8;
+    font-size: var(--base-fz--3);
+    line-height: 1.4;
+    width: 360px;
+    padding-left: 20px;
+    a {
+      color: #3493be;
+      border-bottom: 1px solid #3493be;
+    }
+  }
+}
+
+/* ----------------------------------------------------------------------
+TODO
+---------------------------------------------------------------------- */
+
+/* ----------------------------------------------------------------------
+  ポートフォリオページTOPに対するスタイル指定ファイルです。
+---------------------------------------------------------------------- */
+
+.pf {
+  &-container {
+    display: grid;
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(clamp(20rem, 45vw, 28rem), 1fr)
+    );
+    gap: 4em 3em;
+    margin-inline: auto;
+    @include m.media(sp) {
+      gap: 2.5em;
+    }
+
+    h3 {
+      font-size: 1.6rem;
+      padding-block: 0.8em 0.1em;
+      border-bottom: 1px solid black;
+    }
+  }
+
+  &-img-container {
+    background-color: #eeeeee;
+    padding: 3.5em;
+    position: relative;
+    &:hover {
+      border-radius: 15px;
+    }
+
+    img {
+      width: 100%;
+    }
+    &--flyer {
+      img {
+        box-shadow: 3.5px 3.5px 3.5px rgba(0, 0, 0, 0.275);
+      }
+    }
+  }
+
+  .mask {
+    width: 100%;
+    height: 100%;
+    position: absolute; /* 絶対位置指定 */
+    top: 0;
+    left: 0;
+    opacity: 0; /* マスクを表示しない */
+    background-color: rgba(0, 0, 0, 0.6); /* マスクは半透明 */
+    -webkit-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+  }
+  .caption {
+    font-size: 1.8rem;
+    color: white;
+  }
+  a:hover .mask {
+    opacity: 1; /* マスクを表示する */
+  }
+}
+
+/* ----------------------------------------------------------------------
+  header.phpに対するスタイル指定ファイルです。
+---------------------------------------------------------------------- */
+
+// TODOリファクタ、、、
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-inline: 10%;
+  padding-block: 0.6em;
+  position: sticky;
+  top: 0;
+  z-index: 110;
+  padding-inline: max(5px, 1%);
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 3.5px 3.5px 3.5px rgba(0, 0, 0, 0.275);
+
+  // TODO
+  font-size: clamp(1.4rem, 1.3vw, 1.7rem);
+
+  &__logo-link {
+    width: clamp(8.5rem, 10vw, 12rem);
+    img {
+      width: 100%;
+    }
+  }
+
+  &__nav-container {
+    display: flex;
+    gap: 2rem;
+
+    @include m.media(tab) {
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      right: -100%; // 初期状態で画面外に配置
+      width: min(calc(100vw * 4 / 5), 500px);
+      padding-top: clamp(5rem, 3.862rem + 3.56vw, 7.5rem);
+      height: 100dvh;
+      background-color: rgba(255, 255, 255, 0.9);
+      transition: right 0.3s ease;
+      z-index: 2;
+
+      font-size: 1.6rem;
+    }
+
+    &.activated {
+      right: 0; // ハンバーガークリック時に画面内に表示
+    }
+  }
+
+  &__nav-ul1 {
+    display: flex;
+    gap: 1.5em;
+    align-items: center;
+
+    @include m.media(tab) {
+      flex-direction: column; // モバイル表示時に縦並び
+      gap: 2.5em;
+    }
+  }
+
+  &__nav-li1 {
+    position: relative;
+    @include m.media(tab) {
+      width: 100%;
+      text-align: center;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%) rotate(135deg);
+        left: 30px;
+        width: 10px;
+        aspect-ratio: 1;
+        border-top: 1px solid black;
+        border-right: 1px solid black;
+        transition: transform 0.2s ease-in-out;
+      }
+    }
+  }
+
+  // 第1階層目のliタグをhoverした場合の処理まとめ。
+  &__nav-li1:hover {
+    .header__nav-ul2 {
+      visibility: visible;
+      opacity: 1;
+    }
+    @include m.media(tab) {
+      position: static; // モバイル時は静的表示
+      box-shadow: none;
+      background-color: transparent;
+      left: 0;
+      transform: translateX(0);
+    }
+  }
+
+  // サブメニューの非表示とホバーまたはクリック時のみ表示
+  &__nav-ul2 {
+    display: none; // 初期は非表示
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0px 3.5px 3.5px rgba(0, 0, 0, 0.275);
+    background-color: rgba(255, 255, 255, 0.9);
+
+    @include m.media(tab) {
+      position: static; // モバイル時は静的表示
+      box-shadow: none;
+      background-color: transparent;
+      left: 0;
+      transform: translateX(0);
+    }
+  }
+
+  &__nav-li1:hover .header__nav-ul2 {
+    display: block; // ホバー時にサブメニュー表示
+  }
+
+  // 第2階層目のliタグ部分。
+  &__nav-li2 {
+    white-space: nowrap;
+    display: grid;
+    place-items: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid #8d8d8d;
+    &:hover {
+      background-color: black;
+      color: white;
+    }
+
+    a {
+      padding-block: 1em;
+      padding-inline: 2em;
+    }
+
+    &--pc-none {
+      display: none;
+      @include m.media(tab) {
+        display: grid;
+      }
+    }
+  }
+
+  // ハンバーガーメニュー
+  .header__hamburger-box {
+    display: none; // PCで非表示
+
+    @include m.media(tab) {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      z-index: 3;
+      cursor: pointer;
+    }
+  }
+
+  .header__hamburger-lines {
+    width: 90%;
+    height: 2px;
+    background-color: black;
+    position: relative;
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: black;
+    }
+    &::before {
+      transform: translateY(-8px);
+    }
+    &::after {
+      transform: translateY(8px);
+    }
+  }
+
+  .header__hamburger-box.activated .header__hamburger-lines {
+    background-color: transparent; // 中央線を消す
+    &::before {
+      transform: rotate(45deg);
+    }
+    &::after {
+      transform: rotate(-45deg);
+    }
+  }
+
+  &__mask {
+    display: none;
+    @include m.media(tab) {
+      display: block;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.35);
+      transition: opacity 0.25s ease;
+      opacity: 0;
+    }
+    &.activated {
+      opacity: 1;
+    }
+  }
+  &__cta-btn {
+    background-color: #000;
+    color: #fff;
+    display: block;
+    padding: 0.4em 1.4em;
+    // position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+    font-size: clamp(1.5rem, 1.4vw, 1.8rem);
+    border-radius: 5px;
+    box-shadow: 3.5px 3.5px 3.5px hsla(0, 0%, 0%, 0.275);
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &::before {
+      content: "?";
+      height: 2rem;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background-color: #fff;
+      color: #000;
+      // position: absolute;
+      // top: 50%;
+      // left: 0;
+      // translate: 100% -50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @include m.media(tab) {
+      display: none;
+    }
+  }
+}
+
+/* ----------------------------------------------------------------------
+TODO
+---------------------------------------------------------------------- */
+
+/* ----------------------------------------------------------------------
+  coming-soonに対するスタイル指定ファイルです。
+---------------------------------------------------------------------- */
+
+.coming-soon {
+  background: linear-gradient(90deg, #caf6fc 10%, #e9fbfd 25%, #caf6fc 60%);
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5em;
+
+  &__img-container {
+    width: clamp(26rem, 36vw, 42rem);
+    img {
+      width: 100%;
+    }
+  }
+  p {
+    text-align: center;
+    line-height: 1.5;
+    font-size: var(--base-fz-6);
+  }
+}
+
+// TODO開発中
+
+/* 各スライド間の余白設定 */
+.slick-slide {
+  margin: 0 10px; /* 左右に10pxのマージン */
+}
+
+// .slick-track {
+//   height: 300px; /* 縦幅を統一したいサイズに固定 */
+// }
+// .top-slider__items {
+//   height: 300px; /* 縦幅を統一したいサイズに固定 */
+// }
+
+.top-slider__item {
+  // width: 100%; /* 自動生成されるdivにかかっている。注意！！ */
+
+  // height: 300px; /* 縦幅を統一したいサイズに固定 */
+  // object-fit: cover; /* 画像の縦横比を保ちながら、指定したサイズに収まるように調整 */
+  box-shadow: 3.5px 3.5px 3.5px hsla(0, 0%, 0%, 0.275);
+  // width: 300px;
+  // height: 300px;
+
+  // transform: scale(0.8);
+  // transition: transform 0.3s;
+
+  // @include m.media(tab) {
+  //   // width: auto;
+  //   height: 250px !important;
+  //   // transform: scale(1);
+  // }
+  // @include m.media(sp) {
+  //   height: clamp(15rem, 44vw, 30rem) !important;
+  // }
+  a {
+    display: block;
+  }
+  img {
+    // height: 100%; /* 縦幅を統一したいサイズに固定 */
+    height: 300px;
+
+    @include m.media(tab) {
+      // width: auto;
+      height: 250px;
+      // transform: scale(1);
+    }
+    @include m.media(sp) {
+      height: clamp(15rem, 44vw, 30rem);
+      max-width: 90vw;
+      object-fit: cover;
+    }
+  }
+}
+
+/* ----------------------------------------------------------------------
+TODO
+---------------------------------------------------------------------- */
+
+/* ----------------------------------------------------------------------
+モーダルウィンドウに対するスタイル指定ファイルです。
+---------------------------------------------------------------------- */
+
+.portfolio-modal {
+  &__mask {
+    z-index: 110;
+    position: fixed;
+    inset: 0;
+    background-color: #777;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+
+    // JavaScript用、新設
+    display: none;
+
+    &.activated {
+      opacity: 0.9;
+      pointer-events: auto;
+      cursor: pointer;
+
+      // JavaScript用、新設
+      display: block;
+    }
+  }
+
+  background-color: #caf6fc;
+  padding-top: 3em;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px #fff;
+  z-index: 120;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70vw;
+
+  @include m.media(sp) {
+    width: 90vw;
+  }
+
+  // JavaScript用、新設
+  display: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  &.active {
+    display: block;
+    opacity: 1;
+  }
+
+  &__ttl-en {
+    font-size: 1.6rem;
+    text-align: center;
+    @include m.media(tab) {
+      font-size: 1.4rem;
+    }
+  }
+  &__ttl {
+    font-size: 3.2rem;
+    text-align: center;
+    @include m.media(tab) {
+      font-size: 2.2rem;
+    }
+  }
+
+  &__lists {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding-inline: 5em;
+    margin-block: 3em;
+    color: v.$dark-blue;
+    @include m.media(tab) {
+      grid-template-columns: 1fr;
+      padding-inline: 1em;
+      gap: 0.8em;
+      margin-block: 2em;
+    }
+  }
+  &__list {
+    &:not(:last-child) {
+      border-right: 1px solid v.$dark-blue;
+      @include m.media(tab) {
+        border-right: none;
+      }
+    }
+    &:hover img {
+      transform: scale(1.1); /* ホバー時に画像を 1.1 倍に拡大 */
+    }
+    img {
+      width: clamp(15rem, 14vw, 30rem);
+      order: 2;
+      transition: transform 0.3s ease;
+      // transition: transform 0.3s ease;
+      // &:hover {
+      //   transform: scale(1.1);
+      // }
+    }
+    h3 {
+      font-size: 2.2rem;
+      order: 1;
+    }
+    p {
+      font-size: 1.6rem;
+      padding-inline: 1em;
+      padding-block: 0.4em;
+      border: 1px solid black;
+      order: 3;
+      text-align: center;
+    }
+    a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2em;
+      padding-inline: 3em;
+    }
+    .pc-no-box {
+      display: contents;
+      @include m.media(tab) {
+        display: flex;
+        flex-direction: column;
+        order: 2;
+        gap: 1em;
+      }
+    }
+    @include m.media(tab) {
+      border-right: none;
+      background-color: white;
+      border-radius: 5px;
+      box-shadow: 3.5px 3.5px 3.5px rgba(0, 0, 0, 0.275);
+      img {
+        order: 1; /* Bを先頭（左側）に移動 */
+        width: clamp(12rem, 40vw, 22rem);
+      }
+      h3 {
+        font-size: 1.6rem;
+      }
+      p {
+        font-size: 1.4rem;
+        padding-inline: 0.5em;
+        padding-block: 0.4em;
+      }
+      a {
+        flex-direction: row;
+        justify-content: center; /* AとCを右寄せ */
+        gap: 1em;
+        padding-inline: 1em;
+        padding-block: 1em;
+      }
+    }
+  }
+
+  &__cta {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    &:hover {
+      background-color: #525252;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* 光る効果 */
+    }
+    &:hover p {
+      transform: scale(1.1);
+    }
+
+    background-color: black;
+    display: block;
+    font-size: 1.8rem;
+    padding-block: 1em;
+    border-radius: 0 0 10px 10px;
+    p {
+      color: white;
+      text-align: center;
+      transition: transform 0.3s ease;
+
+      &::after {
+        content: "＞";
+        font-size: 1em;
+        margin-left: 0.5rem;
+        color: inherit;
+      }
+    }
+  }
+
+  &__close-btn {
+    width: clamp(2.75rem, 3.457rem + 0.92vw, 3.75rem);
+    aspect-ratio: 1;
+    color: #000;
+    background-color: #fff;
+    border-radius: 50%;
+    border: solid 1.5px currentColor;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition: background-color 0.2s ease-out;
+
+    &::before,
+    &::after {
+      --line-thickness: 2px;
+      --line-length-in-percent: 85;
+
+      content: "";
+      display: block;
+      background-color: currentColor;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: rotate(45deg) translate(-50%, -50%);
+      transform-origin: 0 0;
+    }
+
+    &::before {
+      height: 2px;
+      width: 85%;
+    }
+
+    &::after {
+      height: 85%;
+      width: 2px;
+    }
+  }
+}
+
+// TODO　どっかに移動
+.btn__open-modal {
+  cursor: pointer;
+}

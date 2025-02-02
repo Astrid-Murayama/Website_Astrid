@@ -1,0 +1,52 @@
+@use "./mixin" as m;
+@use "./function" as f;
+@use "./variable" as v;
+
+/* ----------------------------------------------------------------------
+Google FontsのCDNを読み込み。
+
+Zen Maru Gothic
+- Regular 400
+- Medium 500
+- Bold 700
+
+---------------------------------------------------------------------- */
+
+@import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap');
+
+/* ----------------------------------------------------------------------
+汎用的な指定。
+---------------------------------------------------------------------- */
+
+// 1rem = 10pxとなるように、ブラウザのfont-size基準値（16px）を10/16倍。
+html {
+    font-size: 62.5%;
+}
+
+:root {
+    --default-wrapper-max-vp: #{v.$default-wrapper-max-vp};
+
+    // セクションに対するpadding-blockのテンプレート。
+    --sect-pad-0125: calc(var(--sect-pad) * 0.125);
+    --sect-pad-025: calc(var(--sect-pad) * 0.25);
+    --sect-pad-0375: calc(var(--sect-pad) * 0.375);
+    --sect-pad-05: calc(var(--sect-pad) * 0.5);
+    --sect-pad-0625: calc(var(--sect-pad) * 0.625);
+    --sect-pad-075: calc(var(--sect-pad) * 0.75);
+    --sect-pad-0875: calc(var(--sect-pad) * 0.875);
+    --sect-pad: min(#{50 / v.$common-sp-vh * 100}vh, 50px); // デフォルト。標準的なスマホのvh以下の場合は、少しだけ縮小。
+    --sect-pad-1125: calc(var(--sect-pad) * 1.125);
+    --sect-pad-125: calc(var(--sect-pad) * 1.25);
+    --sect-pad-1375: calc(var(--sect-pad) * 1.375);
+    --sect-pad-15: calc(var(--sect-pad) * 1.5);
+    --sect-pad-1625: calc(var(--sect-pad) * 1.625);
+    --sect-pad-175: calc(var(--sect-pad) * 1.75);
+    --sect-pad-1875: calc(var(--sect-pad) * 1.875);
+    --sect-pad-2: calc(var(--sect-pad) * 2);
+}
+
+// コンテンツが少ない場合も、bodyが常に画面幅いっぱいになるように設定。※そうしなければ、フッター下に余白ができてしまう。
+body {
+    min-height: 100vh;
+    font-family: v.$ff--base;
+}

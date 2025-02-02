@@ -1,0 +1,636 @@
+@use "../global/mixin" as m;
+@use "../global/function" as f;
+@use "../global/variable" as v;
+
+/* ----------------------------------------------------------------------
+webに対するスタイル指定ファイルです。
+---------------------------------------------------------------------- */
+
+/* ----------------------------------------------------------------------
+HEROセクション。
+---------------------------------------------------------------------- */
+
+.product-hero {
+  // TODO一旦無理やり帳消し
+  padding-block: 0;
+  background-size: cover;
+  background-position: center;
+  padding-block: clamp(6rem, 9vw, 12rem);
+
+  // サービス毎に指定
+  &--web {
+    background-image: url(/img/service/about-web/page_top/hero/background_female-meeting-laptop.webp);
+  }
+  &--flyer {
+    background-image: url(/img/service/about-flyer/25307295_l.jpg);
+  }
+  &--banner {
+    background-image: url(/img/service/about-banner/s-o-c-i-a-l-c-u-t-y-9mIbP3oKU-unsplash.jpg);
+  }
+
+  &__container {
+    border-top: 1.5px solid rgba(255, 255, 255, 0.65);
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.65);
+    padding-block: clamp(0.6rem, 1vw, 1rem);
+  }
+  &__inner {
+    background-color: rgba(255, 255, 255, 0.65);
+    padding-block: clamp(3rem, 6vw, 4rem);
+
+    // TODOここも後ほどくくりたい
+    padding-left: 10%;
+    @include m.media(sp) {
+      text-align: center;
+      padding-left: 0;
+    }
+  }
+  p {
+    font-size: 1.6rem;
+  }
+  h1 {
+    font-size: clamp(2.6rem, 4vw, 3.2rem);
+  }
+}
+
+/* ----------------------------------------------------------------------
+  パンクズリスト
+  ---------------------------------------------------------------------- */
+
+// TODO後程修正
+.breadcrumb {
+  background-color: v.$dark-blue;
+  color: white;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  font-size: clamp(1.2rem, 3.5vw, 1.55rem);
+  line-height: 2.5;
+
+  // TODOここも後ほどくくりたい
+  padding-inline: 10%;
+  position: relative;
+
+  @include m.media(sp) {
+    padding-inline: 5%;
+  }
+
+  &::after {
+    content: "";
+    display: block;
+    width: 1.5em;
+    height: 1.5rem;
+    background-color: v.$dark-blue;
+    -webkit-clip-path: polygon(0 0, 100% 0, 50% 100%);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    position: absolute;
+    top: calc(100% - 1.5px);
+    left: 10%;
+    @include m.media(sp) {
+      left: 5%;
+    }
+  }
+
+  a {
+    border-bottom: 1px solid white;
+  }
+  li:not(:first-child)::before {
+    content: ">";
+    color: currentColor;
+    font-size: clamp(1.2rem, 3.5vw, 1.55rem);
+    padding-inline: clamp(0.3em, 1.35vw, 1em);
+  }
+}
+
+/* ----------------------------------------------------------------------
+  FEATUREセクション
+  ---------------------------------------------------------------------- */
+.product-feature {
+  position: relative;
+
+  // TODO無理やり上書き。あとで整理
+  .section__title-en,
+  .section__title {
+    // padding-left: 10%;
+    text-align: left;
+    margin-bottom: 0;
+    @include m.media(sp) {
+      text-align: center;
+      // padding-left: 0;
+    }
+  }
+
+  &__container {
+    // padding-inline: 10%;
+    display: grid;
+    grid-template-columns: auto min(400px, 28vw) 1fr;
+    column-gap: 2rem;
+    align-items: center;
+    margin-top: 4rem;
+
+    @include m.media(tab) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @include m.media(sp) {
+      grid-template-columns: 1fr; // 縦に1列
+      grid-column: unset; // spanの指定を解除
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1rem;
+
+      ul {
+        order: 2;
+      }
+    }
+  }
+  ul {
+    white-space: nowrap; // 文字の折り返しを防止
+
+    li {
+      // font-size: 1.6rem;
+      font-size: var(--base-fz-2);
+      line-height: 2;
+      position: relative;
+
+      // TODO無理やりすぎる。柔軟に
+      margin-left: 3rem;
+    }
+
+    // TODOグローバルな指定。後ほどくくる
+    li::before {
+      content: "";
+      position: absolute;
+      left: -3rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1.6em;
+      height: 1.6em;
+      border: 2px solid #95ccff;
+      border-radius: 50%;
+      background-image: url(/img/common/icon_check-mark.png);
+      background-size: 1em;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+  }
+  &__img-container {
+    img {
+      max-width: 100%; // 親要素に応じて拡大縮小
+      height: auto; // 縦横比を維持
+    }
+    @include m.media(sp) {
+      order: 1;
+      width: 70vw;
+    }
+  }
+
+  &__txt-container {
+    h3 {
+      font-size: 2rem;
+      line-height: 2;
+      color: v.$dark-blue;
+      @include m.media(sp) {
+        line-height: 1.5;
+        text-align: center;
+      }
+    }
+    p {
+      margin-top: 2rem;
+    }
+    .btn {
+      margin-top: 2rem;
+      margin-left: auto;
+    }
+    @include m.media(tab) {
+      grid-column: span 2;
+    }
+
+    @include m.media(sp) {
+      grid-column: unset; // spanの指定を解除
+      order: 3;
+    }
+  }
+
+  // 背景画像への指定
+  &__background-img-container {
+    position: absolute;
+    // -o-object-fit: cover;
+    // object-fit: cover;
+    // top: 0;
+    // right: 0;
+    // z-index: -10;
+    top: 0; // 親要素の上端に配置
+    right: 0; // 親要素の右端に配置
+    width: 70%; // 横幅を親要素の 70% に
+    height: 100%; // 高さを親要素の高さいっぱいに
+    overflow: hidden; // 子要素のはみ出しを隠す
+    z-index: -1; // コンテンツの後ろに配置する
+
+    mask-image: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 1) 400%
+    );
+
+    img {
+      // height: 70%;
+      // width: 70%;
+      width: 100%; // 横幅を親要素にフィット
+      height: 100%; // 高さを親要素にフィット
+      object-fit: cover; // 縦横比を維持しつつ親要素を埋める
+    }
+    @include m.media(tab) {
+      width: 100%; // 横幅を親要素の 70% に
+      height: 50%; // 高さを親要素の高さいっぱいに
+    }
+
+    @include m.media(sp) {
+      width: 100%; // 横幅を親要素の 70% に
+      height: 50%; // 高さを親要素の高さいっぱいに
+    }
+  }
+}
+
+/* ----------------------------------------------------------------------
+SERVICEセクション
+  ---------------------------------------------------------------------- */
+.product-service {
+  background-image: url(/img/service/about-web/page_top/service/background_notebook-and-pc.webp);
+  background-size: cover;
+  background-position: center;
+
+  padding-inline: 20%;
+  @include m.media(tab) {
+    padding-inline: 5%;
+  }
+
+  .section__title-en,
+  .section__title,
+  .section__summary {
+    color: white;
+  }
+
+  &__lists {
+    display: grid;
+    // grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4rem;
+    // width: min(85%, 1200px);
+    margin-inline: auto;
+
+    @include m.media(sp) {
+      grid-template-columns: 1fr;
+    }
+
+    img {
+      border-radius: 10px 10px 0 0;
+    }
+    li {
+      background-color: white;
+      border-radius: 10px;
+
+      // シャドウも一元管理する。クラス名で付与
+      box-shadow: 3.5px 3.5px 3.5px rgba(0, 0, 0, 0.275);
+    }
+    h3 {
+      font-size: 2.4rem;
+      text-align: center;
+      color: v.$dark-blue;
+      margin-bottom: 1rem;
+    }
+  }
+  &__list-txt-box {
+    padding: 2rem 3rem;
+    @include m.media(tab) {
+      padding: 2rem 1.5rem;
+    }
+  }
+}
+
+/* ----------------------------------------------------------------------
+  PORTFOLIOセクション
+  ---------------------------------------------------------------------- */
+.slider__items {
+  &--web {
+    img {
+      height: 500px;
+      box-shadow: none;
+      @include m.media(tab) {
+        height: 400px;
+      }
+      @include m.media(sp) {
+        height: 350px;
+      }
+    }
+  }
+  &--banner {
+    img {
+      height: 300px;
+      box-shadow: none;
+      @include m.media(tab) {
+        height: 250px;
+      }
+      @include m.media(sp) {
+        height: 200px;
+      }
+    }
+  }
+  &--flyer {
+    img {
+      height: 450px;
+      box-shadow: none;
+      @include m.media(tab) {
+        height: 350px;
+      }
+      @include m.media(sp) {
+        height: 300px;
+      }
+    }
+  }
+}
+
+.product-portfolio {
+  // TODO要素に差し掛かった段階で背景画像を固定したい
+  background-image: url(/img/service/page_top/service/387324.png);
+  background-repeat: no-repeat;
+  background-position: 20% 100%;
+  background-attachment: fixed;
+
+  &__lists {
+    // position: relative;
+    // &::before {
+    //   content: "";
+    //   position: sticky;
+    //   top: 0;
+    //   height: 100vh;
+    //   background-image: url(/img/service/page_top/service/387324.png);
+    //   background-repeat: no-repeat;
+    //   background-position: 20% -120px;
+    //   background-size: cover; /* 必要に応じて調整 */
+    //   z-index: -1; /* 背景として扱う */
+    // }
+
+    display: grid;
+    grid-template-columns: repeat(2, 26vw);
+    justify-content: center;
+    gap: 5.6rem;
+    @include m.media(tab) {
+      grid-template-columns: 1fr;
+      padding-inline: 10%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    li {
+      @include m.media(tab) {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    img {
+      width: 100%;
+      @include m.media(tab) {
+        width: 90%;
+      }
+    }
+  }
+
+  &__list-ttl {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+
+    h3 {
+      font-size: 1.6rem;
+    }
+    p {
+      font-size: var(--base-fz--3);
+      border: 1px solid black;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-inline: 1.5rem;
+      line-height: 1.5;
+    }
+  }
+
+  table {
+    font-size: var(--base-fz--1);
+
+    th,
+    td {
+      padding-top: 0.5rem;
+    }
+
+    th {
+      white-space: nowrap;
+    }
+  }
+  &__list-btn-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1.5rem;
+    gap: 0.5rem;
+
+    a:first-child {
+      font-size: var(--base-fz--2);
+      padding-inline: 4rem;
+      line-height: 2;
+      background-color: white;
+      border: 1px solid black;
+      border-radius: 100vh;
+      &:hover {
+        opacity: 0.5;
+      }
+    }
+    a:last-child {
+      font-size: var(--base-fz--2);
+      padding-inline: 4rem;
+      line-height: 2;
+      background-color: black;
+      color: white;
+      border: 1px solid black;
+      border-radius: 100vh;
+      &:hover {
+        opacity: 0.5;
+      }
+    }
+  }
+  .btn__view-web-portfolio {
+    font-size: 1.8rem;
+    padding-inline: 12rem;
+    padding-block: 0.5rem;
+
+    // margin-block: auto;が効かない
+    margin: 4rem auto 0;
+
+    color: white;
+    background-color: v.$dark-blue;
+    border-radius: 100vh;
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+  // TODO無理やりボタンを中央寄せ
+  display: flex;
+  flex-direction: column;
+}
+
+/* ----------------------------------------------------------------------
+  FLOWセクション
+  ---------------------------------------------------------------------- */
+
+.product-flow {
+  background-image: url(/img/service/about-web/page_top/flow/background_combined-images-transparent.webp);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  padding-inline: 5%;
+
+  // TODO微妙な指定。。
+  padding-top: 7.2rem;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0; // 親要素の上部に配置
+    left: 0;
+    right: 0;
+    height: 30%; // グラデーションの高さを調整
+    background: linear-gradient(
+      to bottom,
+      rgb(255, 255, 255) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+
+  .section__title-en,
+  .section__title,
+  .section__summary {
+    position: relative;
+  }
+
+  &__accordion-btn {
+    display: flex; // 横並びにする
+    align-items: center; // 垂直方向の中央揃え
+    justify-content: space-between; // 子要素を左右に配置
+    width: 100%; // 親ボックスいっぱいに広げる
+    background-color: #caf6fc;
+    position: relative;
+    cursor: pointer;
+    padding-right: 2rem;
+    &--last {
+      background-color: v.$dark-blue;
+      color: white;
+    }
+  }
+
+  &__accordion-btn img {
+    padding-top: 1rem;
+    align-self: flex-end; // ボトムに配置
+    width: 150px; // 固定サイズを指定
+    height: auto;
+
+    // TODO数字アイコンと重なってしまうウィンドウ幅を直接指定。
+    @media screen and (max-width: 440px) {
+      padding-top: 1.5rem;
+      width: 120px; // 固定サイズを指定
+    }
+  }
+
+  &__accordion-btn p {
+    // font-size: 2.2rem;
+    font-size: var(--base-fz--1);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &__icon {
+    display: flex;
+    justify-content: center;
+
+    align-items: center;
+    font-size: 2.4rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    color: black;
+    border: 1.5px solid black;
+    border-radius: 100vh;
+    transition: transform 0.3s;
+    &--last {
+      color: white;
+      border: 1.5px solid white;
+    }
+  }
+  li:last-child {
+    margin-bottom: 0;
+  }
+
+  &__accordion-btn.show .product-flow__icon {
+    transform: rotate(180deg); // 開閉時のアイコン変化をアニメーション
+  }
+
+  &__accordion-content {
+    display: none; // 初期状態で非表示
+
+    border: 3px solid #caf6fc;
+    border-top: none;
+    padding: 2rem 3rem; // 余白を追加
+    background-color: white;
+    &--last {
+      border: 3px solid v.$dark-blue;
+    }
+  }
+
+  // TODOリファクタ。上記と混在
+  &__container {
+    display: flex;
+    max-width: 700px;
+    margin-inline: auto;
+    position: relative;
+
+    // 横棒の設定
+    padding-left: 2.5rem;
+    border-left: 1px solid black;
+    @include m.media(sp) {
+      padding-left: 0;
+      border: none;
+    }
+
+    &::before {
+      content: ""; // 擬似要素の生成
+      position: absolute; // 絶対配置
+      bottom: 0; // コンテナの下端に配置
+      left: 0; // 縦線と密接するように調整
+      width: 2rem; // 線の長さ
+      height: 1px; // 線の太さ
+      background-color: black; // 線の色
+      transform: rotate(-55deg); // 45度に回転
+      transform-origin: top left; // 回転の基準を左上に設定
+      @include m.media(sp) {
+        display: none;
+      }
+    }
+    ul {
+      width: 100%;
+    }
+    li {
+      margin-bottom: 2rem;
+      box-shadow: 3.5px 3.5px 3.5px rgba(0, 0, 0, 0.275);
+    }
+  }
+  &__note {
+    margin-top: 2rem;
+    font-size: var(--base-fz--2);
+    // margin-inline: auto
+    text-align: center;
+  }
+}

@@ -1,0 +1,121 @@
+@use "./variable" as v;
+@use "./function" as f;
+
+/* ----------------------------------------------------------------------
+SASSのミックスインをまとめるためのファイルです。
+※CSSの慣例を踏襲し、変数の命名にはハイフンケースを使用。
+---------------------------------------------------------------------- */
+
+/* ----------------------------------------------------------------------
+レスポンシブ対応用のミックスイン。@include media(デバイス名) {}で使用します。
+---------------------------------------------------------------------- */
+$breakpoints: (
+    sp: "screen and (max-width: #{v.$sp-max})",
+    tab: "screen and (max-width: #{v.$tab-max})",
+    pc: "screen and (min-width: #{v.$pc-min})"
+);
+
+@mixin media($device) {
+    @media #{map-get($breakpoints, $device)} {
+        @content;
+    }
+}
+
+/* ----------------------------------------------------------------------
+画面幅を直接指定してレスポンシブ対応するミックスイン。
+---------------------------------------------------------------------- */
+
+@mixin max-width($max-width) {
+    // 単位が省略された場合は、自動的に'px'を補完。
+    $max-width: if(unitless($max-width), #{$max-width + 'px'}, $max-width);
+
+    @media (max-width: $max-width) {
+        @content;
+    }
+}
+
+@mixin min-width($min-width) {
+    // 単位が省略された場合は、自動的に'px'を補完。
+    $min-width: if(unitless($min-width), #{$min-width + 'px'}, $min-width);
+
+    @media (min-width: $min-width) {
+        @content;
+    }
+}
+
+/* ----------------------------------------------------------------------
+ウィンドウリサイズに追従する滑らかなwrapperを実現するためのミックスイン。第二引数はnullとすることが可能。
+スクロールバー幅の計算処理が含まれるため、画面横幅いっぱいの要素にのみ使用すること。
+（使用例）
+@include m.smooth-wrap(90%, null, (85%, 1200px));
+@include m.smooth-wrap(90%, 85%, (80%, 1000px));
+---------------------------------------------------------------------- */
+
+@mixin smooth-wrap($sp-width, $tab-width, $pc-width) {
+    $pc-min: nth($pc-width, 1);
+    $pc-max: nth($pc-width, 2);
+
+    width: min($pc-min, $pc-max);
+    margin-inline: auto;
+
+    @if $tab-width {
+        @include media(tab) {
+            width: min($tab-width, (#{v.$tab-max} - #{v.$scrollbar-width}) * ($pc-min / 100%));
+        }
+
+        @include media(sp) {
+            width: min($sp-width, (#{v.$sp-max} - #{v.$scrollbar-width}) * ($tab-width / 100%));
+        }
+    }
+
+    @else {
+        @include media(sp) {
+            width: min($sp-width, (#{v.$sp-max} - #{v.$scrollbar-width}) * ($pc-min / 100%));
+        }
+    }
+}
+
+/* ----------------------------------------------------------------------
+タイポグラフィー： font-familyやfont-style、font-weightをまとめて定義し、一括指定するミックスイン。
+（使用例）
+@include m.font(playfair);
+---------------------------------------------------------------------- */
+
+$font-types: (
+    base: (font-family: (v.$ff--base),
+        font-style: normal,
+        font-weight: normal,
+    )
+);
+
+// 引数が空の場合はbaseを適用。
+@mixin font($type: base, $style: null, $weight: null) {
+    $style-config: map-get($font-types, $type);
+
+    @if $style-config {
+        font-family: map-get($style-config, 'font-family');
+        font-style: if($style, $style, map-get($style-config, 'font-style'));
+        font-weight: if($weight, $weight, map-get($style-config, 'font-weight'));
+    }
+}
+
+/* ----------------------------------------------------------------------
+【試験運用中】 タイポグラフィー：セクション見出し（2024.01.18更新）
+---------------------------------------------------------------------- */
+
+@mixin heading-container($base-font-size) {
+    --heading-base-size: #{$base-font-size}; // 小さい方の見出しサイズを定義。大きい方はemで相対指定/font-sizeを上書き。
+    font-size: var(--heading-base-size);
+    word-break: keep-all; // 見出しの折り返し位置を指定したい場合は、各文中に<wbr>を挿入。
+}
+
+@mixin en-heading($color) {
+    color: $color;
+    font-weight: bold;
+}
+
+@mixin jp-heading($color) {
+    color: $color;
+    font-weight: 600;
+    line-height: 1.35; // 日本語見出しは折り返しが発生する可能性があるため、デフォルトのline-heightを指定。
+}

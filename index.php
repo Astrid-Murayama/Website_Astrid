@@ -211,39 +211,42 @@
                     <h2 class="about-me__title">ABOUT ME</h2>
                     <p class="about-me__my-name">TSUKASA MURAYAMA</p>
                     <p class="about-me__summary text__basic text__basic--indent">企業の広告部でインハウスデザイナーとして約3年間勤務し、主に家政婦サービスや清掃サービス、訪問介護や医療関係のWebサイト制作・運用を担当してきました。また、SNS運用、コラムの執筆やチラシ、名刺やロゴ制作も経験し、加えてブランディングやマーケティング、SEOの知見も身につけました。2024年から独立し、これまでのサイト運用を続けつつ、フリーランスとして新規の制作依頼をお受けしています。</p>
-                    <div class="about-me__skills">
+                    <ul class="about-me__skills">
 
-                        <div class="about-me__skill">
-                            <img src="/img/service/page_top/about-me/icon_html.png"     alt="">
-                        </div>
-                        <div class="about-me__skill">
+                        <li class="about-me__skill">
+                            <img src="/img/service/page_top/about-me/icon_html.png" alt="">
+                        </li>
+                        <li class="about-me__skill">
                             <img src="/img/service/page_top/about-me/icon_css.png" alt="">
-                        </div>
-                        <div class="about-me__skill">
+                        </li>
+                        <li class="about-me__skill">
                             <img src="/img/service/page_top/about-me/icon_js.png" alt="">
-                        </div>
-                        <div class="about-me__skill">
+                        </li>
+                        <li class="about-me__skill">
                             <img src="/img/service/page_top/about-me/icon_jq.png" alt="">
-                        </div>
-                        <div class="about-me__skill">
+                        </li>
+                        <li class="about-me__skill">
                             <img src="/img/service/page_top/about-me/icon_php.png" alt="">
-                        </div>
-                        <div class="about-me__skill">
+                        </li>
+                        <li class="about-me__skill">
                             <img src="/img/service/page_top/about-me/icon_xd.png" alt="">
-                        </div>
-                        <div class="about-me__skill">
+                        </li>
+                        <li class="about-me__skill">
                             <img src="/img/service/page_top/about-me/icon_ai.png" alt="">
-                        </div>
-                        <div class="about-me__skill">
+                        </li>
+                        <li class="about-me__skill">
                             <img src="/img/service/page_top/about-me/icon_ps.png" alt="">
-                        </div>
-                        <div class="about-me__skill">
+                        </li>
+                        <li class="about-me__skill">
                             <img src="/img/service/page_top/about-me/icon_fg.png" alt="">
-                        </div>
-                        <div class="about-me__skill">
+                        </li>
+                        <li class="about-me__skill">
                             <img src="/img/service/page_top/about-me/icon_pr.png" alt="">
-                        </div>
-                    </div>
+                        </li>
+                        <li class="about-me__skill">
+                            <img src="/img/service/page_top/about-me/icon_github.png" alt="">
+                        </li>
+                    </ul>
                     <a href="/about-me/index.php" class="btn btn__view-about-me">詳しく見る</a>
                 </div>
 

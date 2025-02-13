@@ -3164,4 +3164,9 @@ TODO
 .btn__open-modal {
   cursor: pointer;
 }
+
+.header__nav-li1.current > a {
+  color: #005378;
+  font-weight: 800;
+}
 /*# sourceMappingURL=style.css.map */

@@ -1593,3 +1593,9 @@ TODO
 .btn__open-modal {
   cursor: pointer;
 }
+
+// headerのスタイル追加
+.header__nav-li1.current > a {
+  color: v.$dark-blue;
+  font-weight: 800;
+}

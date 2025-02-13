@@ -1,13 +1,20 @@
 <!-- ヘッダーセクション -->
 <header class="header">
+    
 
     <a href="/" class="header__logo-link">
         <img src="/img/common/logo/logo_astrid.svg" alt="">
     </a>
 
+    <?php
+    function is_current_page($path) {
+        return strpos($_SERVER['REQUEST_URI'], $path) !== false;
+    }
+    ?>
+
     <nav class="header__nav-container">
         <ul class="header__nav-ul1">
-            <li class="header__nav-li1">
+            <li class="header__nav-li1 <?php if (is_current_page('/about-web/')) echo 'current'; ?>">                
                 <a href="/about-web/index.php">Web制作について</a>
 
                 <ul class="header__nav-ul2">
@@ -29,7 +36,7 @@
                 </ul>
 
             </li>
-            <li class="header__nav-li1">
+            <li class="header__nav-li1 <?php if (is_current_page('/about-flyer/')) echo 'current'; ?>">
                 <a href="/about-flyer/index.php">フライヤー制作について</a>
                 <ul class="header__nav-ul2">
                     <li class="header__nav-li2 header__nav-li2--pc-none">
@@ -50,7 +57,7 @@
                 </ul>
 
             </li>
-            <li class="header__nav-li1">
+            <li class="header__nav-li1 <?php if (is_current_page('/about-banner/')) echo 'current'; ?>">
                 <a href="/about-banner/index.php">バナー制作について</a>
                 <ul class="header__nav-ul2">
                     <li class="header__nav-li2 header__nav-li2--pc-none">
@@ -71,10 +78,10 @@
                 </ul>
 
             </li>
-            <li class="header__nav-li1">
+            <li class="header__nav-li1 <?php if (is_current_page('/other/')) echo 'current'; ?>">
                 <a href="/other/index.php">その他</a>
             </li>
-            <li class="header__nav-li1">
+            <li class="header__nav-li1 <?php if (is_current_page('/about-me/')) echo 'current'; ?>">
                 <a href="/about-me/index.php">ABOUT ME</a>
             </li>
             <li class="header__nav-li1 btn__open-modal">

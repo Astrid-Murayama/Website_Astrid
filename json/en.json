@@ -1,0 +1,57 @@
+{
+  "hero": {
+    "copy": "Design that catches the eye, stays in the <span class=\"accent-red\">heart</span>, and delivers results."
+  },
+  "web": {
+    "description": "Optimized design planning and faithful coding from design mockups.<br>I also flexibly support partial production, such as specific pages or components.In addition,<br>I handle WordPress development, BEM methodology, dynamic expressions using JavaScript libraries,<br>and responsive design.With strict adherence to deadlines and courteous communication,<br>I aim to be a reliable outsourcing partner you can trust.",
+    "list": {
+      "design": "Design production",
+      "html": "HTML & PHP",
+      "scss": "SCSS Coding",
+      "responsive": "Responsive",
+      "writing": "Writing",
+      "wordpress": "WordPress",
+      "componentization": "Componentization",
+      "seo": "SEO measures",
+      "library": "JS integration",
+      "cms": "CMS construction",
+      "renewal": "Renewal",
+      "git": "Git management",
+      "form": "Form installation",
+      "management": "Site management"
+    }
+  },
+  "flyer": {
+    "category": {
+      "sales": "Sales<br>Materials",
+      "insert": "Insert<br>Flyers",
+      "poster": "Poster<br>Design"
+    },
+    "description": "We create sales materials, flyers, posters, leaflets, direct mail, business cards,<br>and shop cards tailored to your needs. Our designs are not only visually appealing<br>but also well-structured and readable,<br>leading to tangible results. We handle everything from aligning with your website’s tone<br>and copywriting to preparing print-ready files.<br>We listen to your goals to create designs that truly communicate."
+  },
+  "banner": {
+    "works": {
+      "purpose_sns": "Social Media",
+      "category_apparel": "Apparel Industry",
+      "purpose_column": "Blog Posts",
+      "category_service": "Service Industry",
+      "purpose_google": "Google Ads",
+      "category_housekeeping": "Housekeeping"
+    },
+    "category": {
+      "ad_p": "Advertisement",
+      "ad_h": "Ad Banner",
+      "header_p": "Page Head",
+      "header_h": "Header",
+      "sns_p": "Social Media",
+      "sns_h": "SNS Banner",
+      "thumbnail_p": "Preview Image",
+      "thumbnail_h": "Thumbnail"
+    },
+    "description": "From \"just catching the eye\" to \"making you want to click.\"<br>We can create banners and images for ads, social media, EC promotions, and video thumbnails,<br>tailored to different media and sizes.<br>Designs focused on appeal and brand image, with support for multiple variations.<br>We also handle urgent requests, AB test banners, and comprehensive requests including web design.<br>We support improving click-through rates and conversions."
+  },
+  "about": {
+    "subtitle": "Skills & Languages",
+    "description": "With about three years of experience as an in-house designer in a company’s advertising department, I handled website creation and management for services such as housekeeping, cleaning, home care, and medical businesses. I’ve also worked on social media, writing, and designing flyers, business cards, and logos. Since 2024, I’ve been freelancing, continuing existing site operations while taking on new projects."
+  }
+}

@@ -1,0 +1,157 @@
+@use "sass:math";
+
+/* ----------------------------------------------------------------------
+SASS変数をまとめるためのファイルです。
+※CSSの慣例を踏襲し、変数の命名にはハイフンケースを使用。
+---------------------------------------------------------------------- */
+
+/* ----------------------------------------------------------------------
+レスポンシブ関連。
+---------------------------------------------------------------------- */
+
+// スクロールバー幅の計算処理（要素が画面いっぱいの場合にのみ有効）。
+$scrollbar-width: calc(100vw - 100%);
+
+// レスポンシブ幅の定義。
+$sp-max: 767px;
+$tab-min: $sp-max + 1px;
+$tab-max: 1023px;
+$pc-min: $tab-max + 1px;
+
+// 2024年時点で一般的なスマホのビューポート値。参考：https://gs.statcounter.com/screen-resolution-stats/mobile/worldwide
+$common-sp-vw: 360;
+$common-sp-vh: 800;
+
+// 想定する最小スマホサイズを定義。※320pxは、iPhone 5/SEと同じ幅。
+$base-sp-width: 320px;
+
+// 【重要】汎用的なラッパー幅の定義。これを元にsmooth-wrapミックスインや様々な変数を生成しています。扱いに注意です。
+$default-wrapper-config: 90%, null, (85%, 1200px);
+
+// デバイスごとの汎用的なラッパー幅。
+$default-wrapper-width--pc: min(
+  #{nth(nth($default-wrapper-config, 3), 1)},
+  #{nth(nth($default-wrapper-config, 3), 2)}
+);
+$default-wrapper-width--sp: min(
+  #{nth($default-wrapper-config, 1)},
+  (#{$sp-max} - #{$scrollbar-width}) * #{nth(nth($default-wrapper-config, 3), 1) /
+    100%}
+);
+
+// デバイスごとの汎用的ラッパー幅の余白部分。
+$default-wrapper-margin--pc: calc(
+  100% -
+    min(
+      nth(nth($default-wrapper-config, 3), 1),
+      nth(nth($default-wrapper-config, 3), 2)
+    )
+);
+$default-wrapper-margin--sp: calc(
+  100% -
+    min(
+      #{nth($default-wrapper-config, 1)},
+      (#{$sp-max} - #{$scrollbar-width}) * #{nth(
+          nth($default-wrapper-config, 3),
+          1
+        ) / 100%}
+    )
+);
+
+// デバイスごとの汎用的ラッパー幅余白部分を半分にしたもの。
+$default-wrapper-half-margin--pc: calc($default-wrapper-margin--pc / 2);
+$default-wrapper-half-margin--sp: calc($default-wrapper-margin--sp / 2);
+
+// デフォルトのラッパー幅が最大になる地点のビューポート。
+$default-wrapper-max-vp: math.div(
+  nth(nth($default-wrapper-config, 3), 2),
+  math.div(nth(nth($default-wrapper-config, 3), 1), 100%)
+);
+
+// :root {
+//     // ラッパー制御。
+//     --default-wrapper-width--pc: #{$default-wrapper-width--pc};
+//     --default-wrapper-width--sp: #{$default-wrapper-width--sp};
+//     --default-wrapper-margin--pc: #{$default-wrapper-margin--pc};
+//     --default-wrapper-margin--sp: #{$default-wrapper-margin--sp};
+//     --default-wrapper-half-margin--pc: #{$default-wrapper-half-margin--pc};
+//     --default-wrapper-half-margin--sp: #{$default-wrapper-half-margin--sp};
+
+//     --header-z-index: 10;
+//     --footer-z-index: calc(var(--header-z-index) - 1);
+//     --floating-banner-z-index: calc(var(--header-z-index) - 1);
+// }
+
+/* ----------------------------------------------------------------------
+Font Family。
+---------------------------------------------------------------------- */
+
+// $ff--base: "Zen Maru Gothic", "Helvetica Neue", Arial, sans-serif;
+
+/* ----------------------------------------------------------------------
+テーマカラー。
+---------------------------------------------------------------------- */
+
+// $burgundy: #690000;
+// $red: #BB2541;
+// $vivid-pink: #F8545D;
+// $brink-pink: #FF6777;
+// $pale-salmon: #DC9487;
+// $pale-pink: #FFE5E5;
+// $orange: #DD7403;
+// $orange-yellow: #F5B63C;
+// $lemon-yellow: #EFE831;
+// $corn-yellow: #FFF64E;
+// $golden-yellow: #FFC329;
+// $ivory: #EBEBDD;
+// $navajo-white: #EFEBE0;
+// $cocoa-cream: #D8CEBF;
+// $beige: #D3B99F;
+// $khaki: #B3A16C;
+// $champagne-gold: #DABB7B;
+// $caramel: #B3863F;
+// $pale-mustard: #E8D485;
+// $lightgray: #f7f7f7;
+// $cloud-gray: #c3c3c3;
+// $dolphin-gray: #bbc0c9;
+// $dim-gray: #707070;
+// $blue-jay: #2A506F;
+// $blue: #004AD0;
+// $royal-blue: #234f9f;
+// $alice-blue: #F5FAFE;
+// $navy: #1A2A47;
+// $prussian-blue: #152838;
+// $green: #07A05A;
+// $emerald: #149885;
+// $lightgreen: #C6E2D5;
+// $aqua-haze: #A1CED0;
+// $dark-charcoal: #333;
+
+// $olive: olive;
+// $citrine-yellow: #DEDE00;
+// $ivory: #F2F2DF;
+
+/* ----------------------------------------------------------------------
+Typographic Scale。
+参考：https://github.com/2metres/typographic?tab=readme-ov-file
+---------------------------------------------------------------------- */
+
+// $typographic-scale: (
+//     minor-second: 1.067,
+//     major-second: 1.125,
+//     minor-third: 1.2,
+//     major-third: 1.25,
+//     perfect-fourth: 1.333,
+//     augmented-fourth: 1.414,
+//     perfect-fifth: 1.5,
+//     minor-sixth: 1.6,
+//     golden-ratio: 1.618,
+//     major-sixth: 1.667,
+//     minor-seventh: 1.778,
+//     major-seventh: 1.875,
+//     perfect-octave: 2.0,
+//     major-tenth: 2.5,
+//     major-eleventh: 2.667,
+//     major-twelfth: 3,
+//     double-octave: 4
+// );
